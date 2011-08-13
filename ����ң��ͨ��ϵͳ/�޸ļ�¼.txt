@@ -1,0 +1,42 @@
+By chenjian
+发射程序
+KeyPress == 17; 改成 KeyPress = 17;
+
+接收部分代码 做了适应电路修改   
+void IrDADecode() 
+{
+  
+   TR0=0;					
+   
+   switch(LeadCode)
+   {		                
+     case 0:
+	      if(TH0==0x13)	   //从11修改为13
+		  {
+		    LeadCode++;
+		    break;		   
+		 }
+	 case 1:			   
+       {
+	   	 	
+	    if(TH0>=0x03&&TH0<=0x05)   //从1到3  修改成 3到5
+	   	  {
+		    DataS<<=1;DataNum++;		    
+          }
+		else if (TH0>=0x06&&TH0<=0x08)//从4到5 修改 到6到8
+		   {
+		    DataS<<=1;DataS|=0x01;DataNum++; 
+			}
+
+		else if(TH0>0x08){
+		    DataNum=0;FirstReceive=0;IT1=0;LeadCode=0;		   //从7改到8
+		   }
+	     ReceiveMessage();            //保存数据	 
+	    }
+		}
+		if(DataNum==32)
+		 {TR0=0;FirstReceive=0;IT1=0;LeadCode=0;}
+	    TH0=0x00;
+	    TL0=0x00;
+	    TR0=1;
+ }
